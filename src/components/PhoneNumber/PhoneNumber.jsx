@@ -2,7 +2,7 @@ import { StyledLabel } from 'components/ContactForm/ContactForm.styled';
 import React from 'react';
 import InputMask from 'react-input-mask';
 
-export default function PhoneNumber({ number, handleInput }) {
+export default function PhoneNumber() {
   return (
     <div>
       <StyledLabel>
@@ -18,8 +18,6 @@ export default function PhoneNumber({ number, handleInput }) {
           mask="(999)999-9999"
           type="tel"
           name="number"
-          value={number}
-          onChange={handleInput}
           placeholder="(000)000-0000"
           required
         ></InputMask>

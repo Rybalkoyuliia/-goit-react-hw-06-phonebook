@@ -1,5 +1,3 @@
-import React, { useState } from 'react';
-import { nanoid } from 'nanoid';
 import PhoneNumber from 'components/PhoneNumber/PhoneNumber';
 import {
   LeftStyledList,
@@ -8,54 +6,48 @@ import {
   StyledInput,
   StyledLabel,
 } from './ContactForm.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContacts, selectContacts } from 'components/redux/slice';
 
-const ContactForm = ({ addingContact, contacts }) => {
-  const [data, setData] = useState({ name: '', number: '' });
+const ContactForm = () => {
+  const contacts = useSelector(selectContacts);
+  const dispatch = useDispatch();
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (data.name.trim() === '' || data.number.trim() === '') {
-      return;
-    }
-    if (contacts.find(person => person.name === data.name)) {
-      alert(`${data.name} is already in contacts!`);
-      return;
-    }
-    if (contacts.find(person => person.number === data.number)) {
-      alert(`${data.name}'s number "${data.number}" is already in contacts!`);
+    const number = e.target.elements.number.value;
+    const name = e.target.elements.name.value;
+
+    if (name.trim() === '' || number.trim() === '') {
       return;
     }
 
-    if (!validatePhoneNumber(data.number)) {
+    if (contacts.find(person => person.name === name)) {
+      alert(`${name} is already in contacts!`);
+      return;
+    } else if (contacts.find(person => person.number === number)) {
+      alert(`${name}'s number "${number}" is already in contacts!`);
+      return;
+    } else if (!validatePhoneNumber(e)) {
       alert(`Phone is invalid`);
       return;
+    } else {
+      dispatch(addContacts(name, number));
     }
 
-    addingContact({
-      id: nanoid(6),
-      name: data.name,
-      number: data.number,
-    });
+    const reset = () => {
+      e.target.elements.name.value = '';
+      e.target.elements.number.value = '';
+    };
     reset();
   };
 
-  const handleInput = e => {
-    const { name, value } = e.target;
-    setData({ ...data, [name]: value });
-  };
-
-  const validatePhoneNumber = () => {
+  const validatePhoneNumber = e => {
+    const number = e.target.elements.number.value;
     const PhoneNumberPattern = new RegExp(
       /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im
     );
-    return PhoneNumberPattern.test(data.number);
-  };
-
-  const reset = () => {
-    setData({
-      name: '',
-      number: '',
-    });
+    return PhoneNumberPattern.test(number);
   };
 
   return (
@@ -63,21 +55,14 @@ const ContactForm = ({ addingContact, contacts }) => {
       <StyledForm
         onSubmit={e => {
           handleSubmit(e);
-          validatePhoneNumber(e);
         }}
       >
         <LeftStyledList>
           <StyledLabel>
             Name
-            <StyledInput
-              type="text"
-              name="name"
-              value={data.name}
-              onChange={handleInput}
-              required
-            />
+            <StyledInput type="text" name="name" required />
           </StyledLabel>
-          <PhoneNumber number={data.number} handleInput={handleInput} />
+          <PhoneNumber />
         </LeftStyledList>
         <StyledButton type="submit">Add contact</StyledButton>
       </StyledForm>
