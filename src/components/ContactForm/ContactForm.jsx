@@ -8,10 +8,15 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { addContacts, selectContacts } from 'components/redux/slice';
 import InputMask from 'react-input-mask';
+import { useState } from 'react';
 
 const ContactForm = () => {
   const contacts = useSelector(selectContacts);
   const dispatch = useDispatch();
+  const [mask, setMask] = useState('');
+  const changeMask = e => {
+    setMask(e.target.value);
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -37,7 +42,7 @@ const ContactForm = () => {
 
     const reset = () => {
       e.target.elements.name.value = '';
-      e.target.elements.number.value = '';
+      setMask('');
     };
     reset();
   };
@@ -75,6 +80,8 @@ const ContactForm = () => {
               mask="(999)999-9999"
               type="tel"
               name="number"
+              value={mask}
+              onChange={changeMask}
               placeholder="(000)000-0000"
               required
             ></InputMask>
