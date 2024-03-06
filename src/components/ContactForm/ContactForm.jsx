@@ -1,4 +1,3 @@
-import PhoneNumber from 'components/PhoneNumber/PhoneNumber';
 import {
   LeftStyledList,
   StyledButton,
@@ -8,6 +7,7 @@ import {
 } from './ContactForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContacts, selectContacts } from 'components/redux/slice';
+import InputMask from 'react-input-mask';
 
 const ContactForm = () => {
   const contacts = useSelector(selectContacts);
@@ -62,7 +62,23 @@ const ContactForm = () => {
             Name
             <StyledInput type="text" name="name" required />
           </StyledLabel>
-          <PhoneNumber />
+          <StyledLabel>
+            Number
+            <InputMask
+              style={{
+                height: '20px',
+                borderRadius: '10px',
+                border: 'none',
+                padding: '2px 8px',
+                outline: 'none',
+              }}
+              mask="(999)999-9999"
+              type="tel"
+              name="number"
+              placeholder="(000)000-0000"
+              required
+            ></InputMask>
+          </StyledLabel>
         </LeftStyledList>
         <StyledButton type="submit">Add contact</StyledButton>
       </StyledForm>
